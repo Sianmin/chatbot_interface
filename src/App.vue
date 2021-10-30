@@ -1,28 +1,56 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <basic-vue-chat title="SOCAR CHATTING" @newOwnMessage="onNewOwnMessage" :new-message="message"/>
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
+<script> 
+import BasicVueChat from 'basic-vue-chat'
+import axios from 'axios'
+ 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    BasicVueChat,
+  },
+  data() {
+    return {
+      message: {}
+    }
+  },
+  created () {
+    console.log(this.message);
+  },
+  methods: {
+    onNewOwnMessage(message) {
+      axios.post(process.env.VUE_APP_BACKEND_URL, {
+        params: {
+          msg: message
+        }
+      })
+        .then(response => {
+          let msg = response.data.data;
+          this.message={
+            id: 1,
+            author: 'SOCAR',
+            contents: msg,
+            date: '16:30'
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+      });
+    },
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .window__header__container {
+    background: linear-gradient(90deg, blue, skyblue) !important;
+  }
+  .input__button {
+    background-color: skyblue !important;
+
+  }
 </style>
